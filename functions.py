@@ -1,6 +1,6 @@
 import numpy as np
 
-def my_count(n):
+def ft_count(n):
   try:
     n = n.astype('float')
     n = n[np.logical_not(np.isnan(n))]
@@ -8,7 +8,7 @@ def my_count(n):
   except:
     return len(n)
 
-def my_mean(n):
+def ft_mean(n):
   result = 0
   for i in n:
     if np.isnan(i):
@@ -16,8 +16,8 @@ def my_mean(n):
     result = result + i
   return result / len(n)
 
-def my_std(n):
-  mean = my_mean(n)
+def ft_std(n):
+  mean = ft_mean(n)
   result = 0
   for i in n:
     if np.isnan(i):
@@ -25,7 +25,7 @@ def my_std(n):
     result = result + (i - mean) ** 2
   return (result / len(n)) ** 0.5
 
-def my_min(n):
+def ft_min(n):
   min_value = n[0]
   for i in n:
     val = i
@@ -33,7 +33,7 @@ def my_min(n):
       min_value = val
   return min_value
 
-def my_max(n):
+def ft_max(n):
   min_value = n[0]
   for i in n:
     val = i
@@ -41,7 +41,7 @@ def my_max(n):
       min_value = val
   return min_value
 
-def my_percentile(n, p):
+def ft_percentile(n, p):
   n.sort()
   k = (len(n) - 1) * (p / 100)
   f = np.floor(k)

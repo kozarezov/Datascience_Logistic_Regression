@@ -2,6 +2,9 @@ import argparse as arg
 import numpy as np
 import csv
 import functions as func
+from colorama import init, Fore, Back, Style
+
+init(autoreset=True)
 
 # Получаем аргумент
 parser = arg.ArgumentParser()
@@ -30,60 +33,61 @@ def read_csv(filename):
 
 def add_header_column():
 	column = []
-	column.append('|              |')
-	column.append('|    Count     |')
-	column.append('|    Mean      |')
-	column.append('|    Std       |')
-	column.append('|    Min       |')
-	column.append('|    25%       |')
-	column.append('|    50%       |')
-	column.append('|    75%       |')
-	column.append('|    Max       |')
+	column.append(f'{"":15}')
+	column.append(f'{"Count":>12}')
+	column.append(f'{"Mean":>12}')
+	column.append(f'{"Std":>12}')
+	column.append(f'{"Min":>12}')
+	column.append(f'{"25%":>12}')
+	column.append(f'{"50%":>12}')
+	column.append(f'{"75%":>12}')
+	column.append(f'{"Max":>12}')
 	return column
 
-def add_value_column(dataset, len):
-	value_column = list()
-	for i in range(0, len):
-		try:
-			data = np.array(dataset[:, i], dtype=float)
-			data = data[~np.isnan(data)]
-			if not data.any():
-				raise Exception()
-			value_column[i:0] = func.my_count(data)
-			value_column[i:1] = func.my_mean(data)
-			value_column[i:2] = func.my_std(data)
-			value_column[i:3] = func.my_min(data)
-			value_column[i:4] = func.my_percentile(data, 25)
-			value_column[i:5] = func.my_percentile(data, 50)
-			value_column[i:6] = func.my_percentile(data, 75)
-			value_column[i:7] = func.my_max(data)
-		except:
-			value_column[i:0] = func.my_count(dataset[:, i])
-			value_column[i:1] = " - "
-			value_column[i:2] = " - "
-			value_column[i:3] = " - "
-			value_column[i:4] = " - "
-			value_column[i:5] = " - "
-			value_column[i:6] = " - "
-			value_column[i:7] = " - "
-	return (value_column)
-
+def print_value(data, i):
+	try:
+		arr = np.array(data[:, i], dtype=float)
+		arr = arr[np.logical_not(np.isnan(arr))]
+		if not arr.any():
+			raise Exception()
+		count_value = func.ft_count(arr)
+		print(f'{count_value:>12.2f}', end=' |')
+		mean_value = func.ft_mean(arr)
+		print(f'{Fore.RED if mean_value < 0 else Fore.RESET}' + f'{mean_value:>12.2f}', end=' |')
+		std_value = func.ft_std(arr)
+		print(f'{Fore.RED if std_value < 0 else Fore.RESET}' + f'{std_value:>12.2f}', end=' |')
+		min_value = func.ft_min(arr)
+		print(f'{Fore.RED if min_value < 0 else Fore.RESET}' + f'{min_value:>12.2f}', end=' |')
+		perc25 = func.ft_percentile(arr, 25)
+		print(f'{Fore.RED if perc25 < 0 else Fore.RESET}' + f'{perc25:>12.2f}', end=' |')
+		perc50 = func.ft_percentile(arr, 50)
+		print(f'{Fore.RED if perc50 < 0 else Fore.RESET}' + f'{perc50:>12.2f}', end=' |')
+		perc75 = func.ft_percentile(arr, 75)
+		print(f'{Fore.RED if perc75 < 0 else Fore.RESET}' + f'{perc75:>12.2f}', end=' |')
+		max_value = func.ft_max(arr)
+		print(f'{Fore.RED if max_value < 0 else Fore.RESET}' + f'{max_value:>12.2f}')
+	except:
+		count_value = func.ft_count(data[:, i])
+		print(f'{count_value:>12.2f}', end=' |')
+		print(f'{" - ":>12}', end=' |')
+		print(f'{" - ":>12}', end=' |')
+		print(f'{" - ":>12}', end=' |')
+		print(f'{" - ":>12}', end=' |')
+		print(f'{" - ":>12}', end=' |')
+		print(f'{" - ":>12}', end=' |')
+		print(f'{" - ":>12}')
 
 def describe(filename):
 	data = read_csv(filename)
 	header_string = data[0]
+	data = data[1:, :]
 	header_column = add_header_column()
-	value_column = add_value_column(data[1 : , :], len(header_string))
-	print(value_column)
-
-	""" func.my_count(arr)
-	func.my_mean(arr)
-	func.my_std(arr)
-	func.my_min(arr)
-	func.my_percentile(arr, 25)
-	func.my_percentile(arr, 50)
-	func.my_percentile(arr, 75)
-	func.my_max(arr) """
+	for i in range(0, len(header_column) - 1):
+		print(Fore.GREEN + f'{header_column[i]:>12}', end = ' |')
+	print(Fore.GREEN + f'{header_column[i]:>12}')
+	for i in range(0, len(header_string)):
+		print(Fore.CYAN + f'{header_string[i]:15.15}', end = ' |')
+		print_value(data, i)
 	
 
 describe(args)
