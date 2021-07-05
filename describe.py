@@ -1,35 +1,15 @@
 import argparse as arg
 import numpy as np
-import csv
 import functions as func
 from colorama import init, Fore, Back, Style
 
+# Включаем сбор цваета после печати
 init(autoreset=True)
 
-# Получаем аргумент
+# Получаем аргументы
 parser = arg.ArgumentParser()
 parser.add_argument("dataset", type=str, help="input dataset")
 args = parser.parse_args().dataset
-
-# Функция чтения из файла
-def read_csv(filename):
-	data = list()
-	with open(filename) as csv_file:
-		input = csv.reader(csv_file)
-		try:
-			for i in input:
-				row = list()
-				for value in i:
-					try:
-						value = float(value)
-					except:
-						if not value:
-							value = np.nan
-					row.append(value)
-				data.append(row)
-		except csv.Error as e:
-			exit(e)
-	return np.array(data, dtype=object)
 
 def add_header_column():
 	column = []
@@ -78,7 +58,7 @@ def print_value(data, i):
 		print(f'{" - ":>12}')
 
 def describe(filename):
-	data = read_csv(filename)
+	data = func.read_csv(filename)
 	header_string = data[0]
 	data = data[1:, :]
 	header_column = add_header_column()

@@ -1,5 +1,27 @@
 import numpy as np
+import csv
 
+# Функция чтения из файла
+def read_csv(filename):
+	data = list()
+	with open(filename) as csv_file:
+		input = csv.reader(csv_file)
+		try:
+			for i in input:
+				row = list()
+				for value in i:
+					try:
+						value = float(value)
+					except:
+						if not value:
+							value = np.nan
+					row.append(value)
+				data.append(row)
+		except csv.Error as e:
+			exit(e)
+	return np.array(data, dtype=object)
+
+# Переписанные математические функции
 def ft_count(n):
   try:
     n = n.astype('float')
