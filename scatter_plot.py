@@ -11,15 +11,6 @@ data = data[1:, :]
 data = data[data[:, 1].argsort()]
 faculties = ['Grynffindor', 'Hufflepuff', 'Ravenclaw', 'Slytherin']
 
-# Находим индексы факультетов по строкам
-def search_index_string(faculties, data):
-	ind = [0]
-	for it in faculties:
-		index = np.searchsorted(data[:, 1], it)
-		ind.append(index)
-	ind = np.unique(ind)
-	return (ind)
-
 # Нормализуем массив для нахождения схожих значений
 def normalize(data, index):
 	arr = np.array(data[:, index], dtype=float)
@@ -45,7 +36,7 @@ def find_similar(header, data):
 
 
 # Рисуем диаграмму
-ind = search_index_string(faculties, data)
+ind = func.search_index_string(faculties, data)
 index = find_similar(header, data)
 
 x = np.array(data[:, index[0]], dtype=float)
