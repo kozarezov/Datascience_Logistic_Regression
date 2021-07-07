@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import functions as func
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,7 +15,7 @@ faculties = ['Grynffindor', 'Hufflepuff', 'Ravenclaw', 'Slytherin']
 # Нормализуем массив для нахождения схожих значений
 def normalize(data, index):
 	arr = np.array(data[:, index], dtype=float)
-	arr = arr[~np.isnan(arr)]
+	arr = arr[np.logical_not(np.isnan(arr))]
 	arr = [abs(grade) for grade in arr]
 	arr = [int(str(grade).replace('.', '')[:10]) for grade in arr]
 	return arr

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import argparse as arg
 import numpy as np
 import functions as func
