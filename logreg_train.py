@@ -73,16 +73,18 @@ def logreg_train(filename):
 	data = data.dropna(subset=['Muggle Studies'])
 	X = np.array(data.values[:, [9, 17, 8, 10, 11]], dtype=float) # Массив баллов по предметам
 	y = data.values[:, 1] # Массив факультетов
+	
 
 	normalizer = NormalizeData()
 	y = normalizer.binarize(y) # Переводим факультеты в бинарный вид
 	X_train, X_test, y_train, y_test = normalizer.train_test_split(X, y, train_size=0.7, random_state=4) # Разбиваем датасет на train и test для оценки качества прогноза
-	m, n = X_train.shape # m - количество объектов n - размерность в train выборке
 	normalizer.fit(X_train) # собираем данные для нормализации
 	X_train_std = normalizer.normolize(X_train) # нормализуем train
 	X_test_std = normalizer.normolize(X_test) # нормализуем test
+	m, n = X_train.shape # m - количество объектов n - размерность в train выборке
+	
 
-	""" logreg = LogisticRegression(m, n, X_test_std, y_test)
+	logreg = LogisticRegression(m, n, X_test_std, y_test)
 	logreg.train(X_train_std, y_train, epochs=500)
 
 	domain = np.arange(0, len(logreg.losses_train)) * logreg.report_every
@@ -91,6 +93,6 @@ def logreg_train(filename):
 	plt.xlabel('Epoch number')
 	plt.ylabel('LogLoss')
 	plt.legend()
-	plt.show() """
+	plt.show()
 
 logreg_train(args)

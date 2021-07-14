@@ -23,7 +23,7 @@ class NormalizeData(object):
 		return y
 
 	# Аналог train_test_split из sklearn
-	def train_test_split(self, X, y, train_size=0.3, random_state=None):
+	def train_test_split(self, X, y, train_size=0.7, random_state=None):
 		if random_state:
 			np.random.seed(random_state)
 		p = np.random.permutation(len(X))
@@ -34,6 +34,6 @@ class NormalizeData(object):
 		X_test = X[p][X_offset:]
 		X_train = X[p][:X_offset]
 		
-		y_train = y[p][y_offset:]
-		y_test = y[p][:y_offset]
+		y_test = y[p][y_offset:]
+		y_train = y[p][:y_offset]
 		return (X_train, X_test, y_train, y_test)
