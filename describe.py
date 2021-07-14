@@ -65,7 +65,7 @@ def describe(filename):
 	header_column = add_header_column()
 	for i in range(0, len(header_column) - 1):
 		print(Fore.GREEN + f'{header_column[i]:>12}', end = ' |')
-	print(Fore.GREEN + f'{header_column[i]:>12}')
+	print(Fore.GREEN + f'{header_column[i + 1]:>12}')
 	for i in range(0, len(header_string)):
 		print(Fore.CYAN + f'{header_string[i]:15.15}', end = ' |')
 		print_value(data, i)
