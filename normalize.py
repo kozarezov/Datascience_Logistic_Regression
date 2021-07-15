@@ -15,11 +15,11 @@ class NormalizeData(object):
 		return ((X - self._mean) / self._std)
 	
 	# Аналог LabelBinarizer из sklearn
-	def binarize(self, Y):
+	def numberize(self, Y):
 		k = np.unique(Y).tolist()
-		y = np.zeros((len(Y), len(k)), dtype=int)
+		y = np.zeros(len(Y), dtype=int)
 		for i in range(0, len(Y)):
-			y[i, k.index(Y[i])] = 1
+			y[i] = k.index(Y[i])
 		return y
 
 	# Аналог train_test_split из sklearn
@@ -37,3 +37,7 @@ class NormalizeData(object):
 		y_test = y[p][y_offset:]
 		y_train = y[p][:y_offset]
 		return (X_train, X_test, y_train, y_test)
+
+	# Функция сигмоиды
+	def sigmoid(x):
+		return 1 / (1 + np.exp(-x))
