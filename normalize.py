@@ -2,17 +2,17 @@ import numpy as np
 import functions as func
 
 class NormalizeData(object):
-	def __init__(self, mean=np.array([]), std=np.array([])):
-		self._mean = mean
-		self._std = std
+	def __init__(self):
+		self.min = np.array([])
+		self.max_min = np.array([])
 
 	def fit(self, X):
 		for i in range(0, X.shape[1]):
-			self._mean = np.append(self._mean, func.ft_mean(X[:, i]))
-			self._std = np.append(self._std, func.ft_std(X[:, i]))
+			self.min = np.append(self.min, func.ft_min(X[:, i]))
+			self.max_min = np.append(self.max_min, (func.ft_max(X[:, i] - func.ft_min(X[:, i]))))
 
 	def normolize(self, X):
-		return ((X - self._mean) / self._std)
+		return ((X - self.min) / self.max_min)
 	
 	# Аналог LabelBinarizer из sklearn
 	def numberize(self, Y):
@@ -20,7 +20,7 @@ class NormalizeData(object):
 		y = np.zeros(len(Y), dtype=int)
 		for i in range(0, len(Y)):
 			y[i] = k.index(Y[i])
-		return y
+		return k, y
 
 	# Аналог train_test_split из sklearn
 	def train_test_split(self, X, y, train_size=0.7, random_state=None):
