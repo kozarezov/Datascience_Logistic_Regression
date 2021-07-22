@@ -14,3 +14,6 @@
 
 # Часть - 4. Pair_plot
 <img src="https://github.com/kozarezov/Datascience_Logistic_Regression/blob/main/image/pair-plot.png" width="800">
+
+# Часть - 5. Обучение модели
+<img src="https://github.com/kozarezov/Datascience_Logistic_Regression/blob/main/image/logloss.png" width="800">

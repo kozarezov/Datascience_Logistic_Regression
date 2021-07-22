@@ -10,6 +10,10 @@ class NormalizeData(object):
 		for i in range(0, X.shape[1]):
 			self.min = np.append(self.min, func.ft_min(X[:, i]))
 			self.max_min = np.append(self.max_min, (func.ft_max(X[:, i] - func.ft_min(X[:, i]))))
+	
+	def set_fit(self, min, max_min):
+		self.min = min
+		self.max_min = max_min
 
 	def normolize(self, X):
 		return ((X - self.min) / self.max_min)

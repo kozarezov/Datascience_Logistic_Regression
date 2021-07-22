@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
 import argparse as arg
 import numpy as np
-import functions as func
 import matplotlib.pyplot as plt
 import pandas as pd
+import csv
 from normalize import NormalizeData
 from logreg_predict import Predict
 from sklearn.metrics import accuracy_score
+
+OUT = './weights.csv'
 
 class LogisticRegression:
 	def __init__(self, learning_rate=0.1, max_iterations=400):
 		# Инициализация w и b случайными числами, report_every - каждые n итераций вывод значения ошибки
 		self.lr = learning_rate
 		self.iterations = max_iterations
-		self.report_every = 10
+		self.report_every = 10 # каждые n итераций фиксировать данные для построения графика
 	
 	def gradient_descent(self, X, theta, Y, m):
 		Z = X.dot(theta)
@@ -21,6 +23,7 @@ class LogisticRegression:
 		gradient = np.dot(X.T, (A - Y)) / m
 		return self.lr * gradient
 
+	# Функция рассчета логистических потерь
 	def log_loss(self, y_true, y_pred):
 		return -np.sum(y_true * np.log(y_pred) + (1 - y_true) * np.log(1 - y_pred), axis=0) / len(y_true)
 
@@ -35,7 +38,6 @@ class LogisticRegression:
 		m, n = X.shape # m - количество объектов n - размерность в train выборке
 		self.theta = []
 		self.losses_train = []
-		X = np.insert(X, 0, 1, axis=1)
 		theta_nb = len(X[0])
 
 		for it in range(4):
@@ -49,15 +51,11 @@ class LogisticRegression:
 			self.losses_train.insert(0, losses_train)
 			self.theta.append(theta)
 
-# Получаем аргументы
-parser = arg.ArgumentParser()
-parser.add_argument("dataset", type=str, help="input dataset")
-args = parser.parse_args().dataset
-
 def logreg_train(filename):
 	data = pd.read_csv(filename) # Читаем датасет
+	courses = data.columns[6:].values.tolist()
 	# Удаляем Nan значения
-	data = data.dropna()
+	data = data.dropna(subset=courses)
 	X = np.array(data.values[:, 6:], dtype=float) # Массив баллов по предметам
 	y = data.values[:, 1] # Массив факультетов
 	
@@ -69,14 +67,14 @@ def logreg_train(filename):
 	X_test_std = normalizer.normolize(X_test) # нормализуем test
 
 	logreg = LogisticRegression()
-	logreg.train(X_train_std, y_train)
+	logreg.train(X_train_std, y_train) # обучаем модель на тренировочной выборке
 	logpred = Predict()
-	y_predict = logpred.predict(X_test_std, logreg.theta)
-
-	accuracy = accuracy_score(y_test, y_predict)
+	y_predict = logpred.predict(X_test_std, logreg.theta) # прогнозируем тестовую выборку
+	
+	accuracy = accuracy_score(y_test, y_predict) # проверяем точность
 	print(f"Точность: {round(accuracy * 100, 2)} %")
 
-
+	# Выводим потери на график
 	domain = np.arange(0, len(logreg.losses_train[0])) * logreg.report_every
 	for i in range(4):
 		plt.plot(domain, logreg.losses_train[i], label=k[i])
@@ -85,4 +83,17 @@ def logreg_train(filename):
 	plt.legend()
 	plt.show()
 
+	# Записываем в файл
+	with open(OUT, 'w') as res:
+		writer = csv.writer(res)
+		writer.writerow(courses)
+		for theta in logreg.theta:
+			writer.writerow(theta)
+		writer.writerow(normalizer.min)
+		writer.writerow(normalizer.max_min)
+		
+# Получаем аргументы
+parser = arg.ArgumentParser()
+parser.add_argument("dataset", type=str, help="укажите путь к dataset")
+args = parser.parse_args().dataset
 logreg_train(args)
