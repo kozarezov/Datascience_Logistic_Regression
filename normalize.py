@@ -3,20 +3,20 @@ import functions as func
 
 class NormalizeData(object):
 	def __init__(self):
-		self.min = np.array([])
+		self.mean = np.array([])
 		self.max_min = np.array([])
 
 	def fit(self, X):
 		for i in range(0, X.shape[1]):
-			self.min = np.append(self.min, func.ft_min(X[:, i]))
-			self.max_min = np.append(self.max_min, (func.ft_max(X[:, i] - func.ft_min(X[:, i]))))
+			self.mean = np.append(self.mean, func.ft_mean(X[:, i]))
+			self.max_min = np.append(self.max_min, (func.ft_std(X[:, i] - func.ft_min(X[:, i]))))
 	
-	def set_fit(self, min, max_min):
-		self.min = min
+	def set_fit(self, mean, max_min):
+		self.mean = mean
 		self.max_min = max_min
 
 	def normolize(self, X):
-		return ((X - self.min) / self.max_min)
+		return ((X - self.mean) / self.max_min)
 	
 	# Аналог LabelBinarizer из sklearn
 	def numberize(self, Y):

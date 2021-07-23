@@ -53,10 +53,12 @@ class LogisticRegression:
 
 def logreg_train(filename):
 	data = pd.read_csv(filename) # Читаем датасет
+	data = data.dropna()
 	courses = data.columns[6:].values.tolist()
-	# Удаляем Nan значения
-	data = data.dropna(subset=courses)
-	X = np.array(data.values[:, 6:], dtype=float) # Массив баллов по предметам
+	X = np.array(data.values[:, 6:], dtype=float)
+	""" (Herbology,Defense Against the Dark Arts,Divination,Ancient Runes,Flying)
+	courses = data.columns[[8, 9, 10, 12, 18]].values.tolist()
+	X = np.array(data.values[:, [8, 9, 10, 12, 18]], dtype=float) """
 	y = data.values[:, 1] # Массив факультетов
 	
 	normalizer = NormalizeData()
@@ -66,7 +68,7 @@ def logreg_train(filename):
 	X_train_std = normalizer.normolize(X_train) # нормализуем train
 	X_test_std = normalizer.normolize(X_test) # нормализуем test
 
-	logreg = LogisticRegression()
+	logreg = LogisticRegression(learning_rate=0.1, max_iterations=400)
 	logreg.train(X_train_std, y_train) # обучаем модель на тренировочной выборке
 	logpred = Predict()
 	y_predict = logpred.predict(X_test_std, logreg.theta) # прогнозируем тестовую выборку
@@ -89,7 +91,7 @@ def logreg_train(filename):
 		writer.writerow(courses)
 		for theta in logreg.theta:
 			writer.writerow(theta)
-		writer.writerow(normalizer.min)
+		writer.writerow(normalizer.mean)
 		writer.writerow(normalizer.max_min)
 		
 # Получаем аргументы
